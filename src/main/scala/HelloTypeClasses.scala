@@ -28,6 +28,10 @@ given Foldable[Set] with
 
 def combine[A : Monoid, F[_]: Foldable](l: F[A]): A = summon[Foldable[F]].foldRight(l, summon[Monoid[A]].empty)((a, b) => summon[Monoid[A]].combine(a, b))
 
+case class MyPair[A](_1: A, _2: A)
+given Foldable[MyPair] with
+  def foldRight[A](c: MyPair[A], z: A)(op: (A, A) => A): A = op(op(z, c._1), c._2)
+
 object HelloTypeClasses extends IOApp.Simple {
   val run: IO[Unit] =
     for {
@@ -35,5 +39,7 @@ object HelloTypeClasses extends IOApp.Simple {
       _ <- IO(println(combine(List(1, 2, 3))))
       _ <- IO(println(combine(List((1, "1"), (2, "2"), (3, "3")))))
       _ <- IO(println(combine(Set(3, 4, 5))))
+      _ <- IO(println(combine(MyPair(2, 33))))
+      _ <- IO(println(combine(MyPair("3", "1"))))
     } yield ()
 }
