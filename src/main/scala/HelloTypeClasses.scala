@@ -19,7 +19,10 @@ given [A: Monoid, B: Monoid]: Monoid[(A, B)] with
 def combine[A : Monoid](l: List[A]): A = l.foldRight(summon[Monoid[A]].empty)((a, b) => summon[Monoid[A]].combine(a, b))
 
 object HelloTypeClasses extends IOApp.Simple {
-  val run: IO[Unit] = IO(System.out.println(combine(List("1", "2", "3"))))
-    .flatMap(_ => IO(System.out.println(combine(List(1, 2, 3)))))
-    .flatMap(_ => IO(System.out.println(combine(List((1, "1"), (2, "2"), (3, "3"))))))
+  val run: IO[Unit] =
+    for {
+      _ <- IO(println(combine(List("1", "2", "3"))))
+      _ <- IO(println(combine(List(1, 2, 3))))
+      _ <- IO(println(combine(List((1, "1"), (2, "2"), (3, "3")))))
+    } yield ()
 }
