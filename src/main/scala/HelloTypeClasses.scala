@@ -30,7 +30,7 @@ def combine[A : Monoid, F[_]: Foldable](l: F[A]): A = summon[Foldable[F]].foldRi
 
 case class MyPair[A](_1: A, _2: A)
 given Foldable[MyPair] with
-  def foldRight[A](c: MyPair[A], z: A)(op: (A, A) => A): A = op(op(z, c._1), c._2)
+  def foldRight[A](c: MyPair[A], z: A)(op: (A, A) => A): A = op(c._1, op(c._2, z))
 
 object HelloTypeClasses extends IOApp.Simple {
   val run: IO[Unit] =
